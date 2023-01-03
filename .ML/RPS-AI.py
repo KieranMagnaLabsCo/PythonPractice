@@ -27,20 +27,20 @@ def markov():
   probScissors = 0
 
   try:
-      choice = int(input("1: Rock, 2: Paper, 3: Scissors \n"))
+      choice = int(input("0: Rock, 1: Paper, 2: Scissors \n"))
   except ValueError:
     print("you must enter an integer \n")
 
-  if(choice > 3 or choice < 1):
+  if(choice > 2 or choice < 0):
     print ("You must enter an integer less than three and greater than 0  \n")
-    while(choice > 3 or choice < 1):
+    while(choice > 2 or choice < 0):
       print ("You must enter an integer less than three and greater than 0 \n")
       try:
-        choice = int(input("1: Rock, 2: Paper, 3: Scissors \n"))
+        choice = int(input("0: Rock, 1: Paper, 2: Scissors \n"))
       except ValueError:
         print("you must enter an integer \n")
 
-  machineChoice = random.randint(1, 3)
+  machineChoice = random.randint(0, 2)
   result = checkWin(choice,machineChoice,1)
   print ("You chose %s" % choices[choice])
   print ("The machine chose %s" % choices[machineChoice])
@@ -51,16 +51,16 @@ def markov():
   while(continuePlaying):
     choice = 3
     try:
-      choice = int(input("1: Rock, 2: Paper, 3: Scissors, 5: exit \n"))
+      choice = int(input("0: Rock, 1: Paper, 2: Scissors, 5: exit \n"))
     except ValueError:
       print("you must enter an integer \n")
 
-    if((choice > 3 or choice < 1) and choice != 5):
+    if((choice > 2 or choice < 0) and choice != 5):
       print ("You must enter an integer less than three and greater than 0 or choose 5 to exit.  \n")
-      while((choice > 3 or choice < 1) and choice != 5):
+      while((choice > 2 or choice < 0) and choice != 5):
         print ("You must enter an integer less than three and greater than 0 or choose 5 to exit.\n")
         try:
-          choice = int(input("1: Rock, 2: Paper, 3: Scissors \n"))
+          choice = int(input("0: Rock, 1: Paper, 2: Scissors \n"))
         except ValueError:
           print("you must enter an integer \n")
     if (choice == 5):
@@ -74,17 +74,17 @@ def markov():
     else:
       transMatrix = buildTransitionProbabilities(prevChoice,choice,result)
       machineChoice = random.randint(1, 100)
+      probabilitiesRPS[0] = transMatrix[prevChoice][0]
       probabilitiesRPS[1] = transMatrix[prevChoice][1]
       probabilitiesRPS[2] = transMatrix[prevChoice][2]
-      probabilitiesRPS[3] = transMatrix[prevChoice][3]
-      rangeR = probabilitiesRPS[1] * 100
-      rangeP = probabilitiesRPS[2] * 100 + rangeR
+      rangeR = probabilitiesRPS[0] * 100
+      rangeP = probabilitiesRPS[1] * 100 + rangeR
       if (machineChoice <= rangeR):
-        machineChoice = 2
-      elif (machineChoice <= rangeP):
-        machineChoice = 3
-      else:
         machineChoice = 1
+      elif (machineChoice <= rangeP):
+        machineChoice = 2
+      else:
+        machineChoice = 0
 
       result = checkWin(choice,machineChoice,1)
       prevChoice = choice
@@ -172,48 +172,48 @@ def buildTransitionMatrix(winlosstwo):
 def checkWin(user, machine, mode):
 	win = False
 	tie = False
-	if (user == 1):
-		if (machine == 3):
-			win = True
-			tie = False
-		elif (machine == 2):
-			win = False
-			tie = False
-		elif (user == 1):
-			tie = True
-		else:
-		  print ("Something wierd happened and machine was: %s" % machine)
-	elif (user == 2):
-		if (machine == 1):
-			win = True
-			tie = False
-		elif (machine == 3):
-			win = False
-			tie = False
-		elif (machine == 2):
-			tie = True
-		else:
-		  print ("Something wierd happened and machine was: %s" % machine)
-	else:
+	if (user == 0):
 		if (machine == 2):
 			win = True
 			tie = False
 		elif (machine == 1):
 			win = False
 			tie = False
-		elif (machine == 3):
+		elif (user == 0):
+			tie = True
+		else:
+		  print ("Something wierd happened and machine was: %s" % machine)
+	elif (user == 1):
+		if (machine == 0):
+			win = True
+			tie = False
+		elif (machine == 2):
+			win = False
+			tie = False
+		elif (machine == 1):
+			tie = True
+		else:
+		  print ("Something wierd happened and machine was: %s" % machine)
+	else:
+		if (machine == 1):
+			win = True
+			tie = False
+		elif (machine == 0):
+			win = False
+			tie = False
+		elif (machine == 2):
 			tie = True
 		else:
 		  print ("Something wierd happened and machine was: %s" % machine)
 
 	if (tie == True):
-		checkStats(3, mode)
+		checkStats(2, mode)
 		return "Tied!"
 	elif (win):
-		checkStats(1, mode)
+		checkStats(0, mode)
 		return "Win!"
 	else:
-		checkStats(2, mode)
+		checkStats(1, mode)
 		return "Lose!"
 
 def checkStats(wlt,modeChosen):
