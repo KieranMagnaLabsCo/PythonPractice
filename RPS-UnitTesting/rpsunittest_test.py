@@ -35,7 +35,7 @@ def RPS():
     print(f"The machine chose {choices[machine_choice]}")
     print(f"You {result}")
 
-# RPS()
+#  RPS()
 
 # begin pytest code for unit testing
 def test_validate_choice():
