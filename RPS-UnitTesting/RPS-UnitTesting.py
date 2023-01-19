@@ -38,7 +38,7 @@ def RPS():
 # RPS()
 
 # begin pytest code for unit testing
-def Test_validate_choice():
+def test_validate_choice():
     with pytest.raises(ValueError):
         validate_choice(-1)
     with pytest.raises(ValueError):
@@ -48,11 +48,11 @@ def Test_validate_choice():
     with pytest.raises(ValueError):
         validate_choice("rock")
 
-def Test_check_should_exit():
+def test_check_should_exit():
     assert check_should_exit(5) == True
     assert check_should_exit(2) == False
 
-def Test_check_win():
+def test_check_win():
     # Test that the function returns 'tied' when choice is equal to machine_choice
     assert 'tied' == check_win(0, 0)
     assert 'tied' == check_win(1, 1)
