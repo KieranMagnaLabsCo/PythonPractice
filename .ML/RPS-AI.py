@@ -1,12 +1,16 @@
 ### ML Rock Paper Scissors
 
+# import random library
 import random
+# define outcome names
 winEas,loseEas,tieEas = 0.0,0.0,0.0
 
+# build matrices to hold outcomes
 buildTMatrix = {'rr': 1, 'rp': 1, 'rs': 1, 'pr': 1, 'pp': 1, 'ps': 1, 'sr': 1, 'sp': 1, 'ss': 1}
 buildTMatrixL = {'rr': 1, 'rp': 1, 'rs': 1, 'pr': 1, 'pp': 1, 'ps': 1, 'sr': 1, 'sp': 1, 'ss': 1}
 buildTMatrixT = {'rr': 1, 'rp': 1, 'rs': 1, 'pr': 1, 'pp': 1, 'ps': 1, 'sr': 1, 'sp': 1, 'ss': 1}
 
+# define number of outcomes for matrices
 n = 3
 m = 3
 tMatrix = [[0] * m for i in range(n)]
@@ -15,6 +19,9 @@ tMatrixT = [[0] * m for i in range(n)]
 
 probabilitiesRPS = [1/3,1/3,1/3]
 
+# create markov chain for ML
+# a markov chain is a stochastic model in which a sequence of events is dependent on
+# the events and outcomes of the state attained previously
 def markov():
   global probabilitiesRPS
   choices = ["Rock","Paper","Scissors"]
@@ -26,6 +33,8 @@ def markov():
   probPaper = 0
   probScissors = 0
 
+# define choices for users to play and create rules for allowable answers and answers
+# that will return an error
   try:
       choice = int(input("0: Rock, 1: Paper, 2: Scissors \n"))
   except ValueError:
@@ -40,6 +49,8 @@ def markov():
       except ValueError:
         print("you must enter an integer \n")
 
+# print the user's command and the bot's commands into the terminal along with the result
+# of the round
   machineChoice = random.randint(0, 2)
   result = checkWin(choice,machineChoice,1)
   print ("You chose %s" % choices[choice])
@@ -48,6 +59,7 @@ def markov():
 
   prevChoice = choice
 
+# if the user keeps playing, keep prompting them to choose a move or exit:
   while(continuePlaying):
     choice = 3
     try:
@@ -63,7 +75,9 @@ def markov():
           choice = int(input("0: Rock, 1: Paper, 2: Scissors \n"))
         except ValueError:
           print("you must enter an integer \n")
-    if (choice == 5):
+                # if user exits, print out the outcomes that are held
+                # and computed in the matrices
+    if (choice == 5): # define matrices of results for game completion
       print ("Thanks for Playing!")
       print ("You won %d times!" % int(winEas))
       print ("You lost %d times!" % int(loseEas))
@@ -71,6 +85,8 @@ def markov():
       percentWon = "{percent:.2%}".format(percent=(winEas / (winEas+loseEas+tieEas)))
       print ("Your win percentage is %s from a total of %d games" % (percentWon,int(winEas+loseEas+tieEas)))
       continuePlaying = False
+      # if the user does not choose to exit the game, keep recording the moves, outcomes,
+      # and computing the matrix percentages and probabilities
     else:
       transMatrix = buildTransitionProbabilities(prevChoice,choice,result)
       machineChoice = random.randint(1, 100)
@@ -93,6 +109,8 @@ def markov():
       print("You %s" % result)
 
 
+# compute results of win, loss, and tie for each move,
+# outcome, and round
 def buildTransitionProbabilities(pC,c,winloss):
   global buildTMatrix
   global buildTMatrixL
@@ -114,11 +132,11 @@ def buildTransitionProbabilities(pC,c,winloss):
 
   return buildTransitionMatrix(winloss)
 
+#build transition matrix for results
 def buildTransitionMatrix(winlosstwo):
   global tMatrix
   global tMatrixL
   global tMatrixT
-
   if winlosstwo == "Win!":
     rock = buildTMatrix['rr'] + buildTMatrix['rs'] +buildTMatrix['rp']
     paper = buildTMatrix['pr'] + buildTMatrix['ps'] +buildTMatrix['pp']
@@ -151,7 +169,6 @@ def buildTransitionMatrix(winlosstwo):
             c = a/scissors
           row[col_index] = float(c)
     return (tMatrixT)
-
   else:
     rock = buildTMatrixL['rr'] + buildTMatrixL['rs'] +buildTMatrixL['rp']
     paper = buildTMatrixL['pr'] + buildTMatrixL['ps'] +buildTMatrixL['pp']
@@ -169,7 +186,9 @@ def buildTransitionMatrix(winlosstwo):
           row[col_index] = float(c)
     return (tMatrixL)
 
-def checkWin(user, machine, mode):
+# define a function in which the program checks the user's play versus the machine's
+# play to figure out who won. If there is something else, notify the player of the problem
+def checkWin (user, machine, mode):
 	win = False
 	tie = False
 	if (user == 0):
@@ -205,7 +224,6 @@ def checkWin(user, machine, mode):
 			tie = True
 		else:
 		  print ("Something wierd happened and machine was: %s" % machine)
-
 	if (tie == True):
 		checkStats(2, mode)
 		return "Tied!"
@@ -216,6 +234,7 @@ def checkWin(user, machine, mode):
 		checkStats(1, mode)
 		return "Lose!"
 
+# win, loss, tie statistics
 def checkStats(wlt,modeChosen):
   global winEas
   global loseEas
@@ -229,4 +248,5 @@ def checkStats(wlt,modeChosen):
     else:
       tieEas += 1
 
+# call markov
 markov()
