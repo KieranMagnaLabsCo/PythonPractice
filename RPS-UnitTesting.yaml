@@ -1,5 +1,5 @@
 import random
-import pytest
+import pytest 
 
 def validate_choice(choice):
     if choice not in [0, 1, 2, 5]:
